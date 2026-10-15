@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIANA CORAL · Swimwear y estilo mediterráneo</title>
+<meta name="description" content="DIANA CORAL: moda de baño, capazos, toallas y accesorios hechos en España con materiales reciclados.">
+
+<!-- Tipografías: serif editorial para títulos, sans geométrica para cuerpo -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Tailwind por CDN. Aquí definimos la paleta y las fuentes de la marca una sola vez -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: '#737AE6',      // Periwinkle (color principal)
+          ink: '#50535A',        // Gris pizarra (texto, nunca negro puro)
+          inksoft: '#50535AC8',  // Gris pizarra con transparencia (texto secundario)
+          sand: '#F9F8F6'        // Arena / piedra (secciones secundarias)
+        },
+        fontFamily: {
+          serif: ['"Cormorant Garamond"', 'Playfair Display', 'serif'],
+          sans: ['Montserrat', 'Plus Jakarta Sans', 'sans-serif']
+        }
+      }
+    }
+  };
+</script>
+<script src="https://unpkg.com/lucide@0.469.0"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Montserrat', sans-serif; color: #50535A; background: #FFFFFF; -webkit-font-smoothing: antialiased; }
+  .font-serif { font-family: 'Cormorant Garamond', serif; }
+  .eyebrow { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 500; }
+  .nav-link { position: relative; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500; padding: 0.25rem 0; }
+  .nav-link::after { content: ''; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%; background: #737AE6; transform: scaleX(0); transform-origin: left; transition: transform .35s ease; }
+  .nav-link:hover::after { transform: scaleX(1); }
+
+  /* Botón con barrido de color en hover: el fondo entra desde la izquierda */
+  .btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; gap: .6rem; padding: 1rem 2.2rem; font-size: .72rem; letter-spacing: .24em; text-transform: uppercase; font-weight: 500; border-radius: 2px; transition: color .4s ease, border-color .4s ease; z-index: 0; cursor: pointer; }
+  .btn::before { content: ''; position: absolute; inset: 0; transform: translateX(-101%); transition: transform .45s cubic-bezier(.22,.61,.36,1); z-index: -1; }
+  .btn:hover::before { transform: translateX(0); }
+  .btn-outline { border: 1px solid #50535A; color: #50535A; background: transparent; }
+  .btn-outline::before { background: #50535A; }
+  .btn-outline:hover { color: #fff; }
+  .btn-brand { background: #737AE6; color: #fff; border: 1px solid #737AE6; }
+  .btn-brand::before { background: #50535A; }
+  .btn-brand:hover { border-color: #50535A; }
+  .btn[disabled] { opacity: .6; pointer-events: none; }
+
+  .chip { border: 1px solid rgba(80,83,90,.25); padding: .55rem 1.1rem; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; border-radius: 2px; transition: all .25s ease; cursor: pointer; background: #fff; }
+  .chip:hover { border-color: #737AE6; color: #737AE6; }
+  .chip.active { background: #737AE6; border-color: #737AE6; color: #fff; }
+
+  .opt { min-width: 3rem; border: 1px solid rgba(80,83,90,.25); padding: .65rem .9rem; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; border-radius: 2px; transition: all .2s ease; cursor: pointer; background: #fff; }
+  .opt:hover { border-color: #50535A; }
+  .opt.active { border-color: #737AE6; background: #737AE6; color: #fff; }
+
+  .field { width: 100%; border: 0; border-bottom: 1px solid rgba(80,83,90,.3); padding: .7rem 0; font-size: .85rem; background: transparent; outline: none; border-radius: 0; transition: border-color .25s; }
+  .field:focus { border-color: #737AE6; }
+  .field::placeholder { color: rgba(80,83,90,.55); }
+  label.lbl { font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(80,83,90,.8); }
+
+  /* Capas superpuestas (modal, carrito, checkout) */
+  .overlay { position: fixed; inset: 0; background: rgba(80,83,90,.45); opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 100%; max-width: 28rem; background: #fff; transform: translateX(100%); transition: transform .45s cubic-bezier(.22,.61,.36,1); display: flex; flex-direction: column; }
+  .drawer.open { transform: translateX(0); }
+  .modal-panel { transform: translateY(14px); opacity: 0; transition: transform .4s ease, opacity .4s ease; }
+  .overlay.open .modal-panel { transform: translateY(0); opacity: 1; }
+  body.locked { overflow: hidden; }
+  .hide-scroll::-webkit-scrollbar { width: 0; height: 0; }
+  .thin-scroll::-webkit-scrollbar { width: 4px; }
+  .thin-scroll::-webkit-scrollbar-thumb { background: rgba(80,83,90,.25); }
+  .count-badge { position: absolute; top: -6px; right: -9px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #737AE6; color: #fff; font-size: 9px; line-height: 16px; text-align: center; font-weight: 600; }
+  .fade-in { animation: fadeIn .6s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  :focus-visible { outline: 1px solid #737AE6; outline-offset: 3px; }
+</style>
+</head>
+
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<div class="bg-sand border-b border-ink/10">
+  <p class="text-center py-2.5 px-4 text-[.62rem] sm:text-[.68rem] tracking-[.2em] uppercase text-ink">
+    Envío gratuito en pedidos superiores a 150€ <span class="mx-2 text-brand">|</span> Hecho en España con materiales reciclados
+  </p>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-ink/10">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 h-24 grid grid-cols-[auto_1fr_auto] items-center gap-6">
+    <div class="flex items-center gap-4">
+      <button id="menuBtn" class="lg:hidden" aria-label="Abrir menú"><i data-lucide="menu" class="w-5 h-5"></i></button>
+      <a href="#top" id="logoSlot" aria-label="DIANA CORAL, inicio" class="block"></a>
+    </div>
+
+    <nav class="hidden lg:flex justify-center gap-9" aria-label="Principal">
+      <a href="#catalogo" data-nav="swim" class="nav-link">Swimwear</a>
+      <a href="#catalogo" data-nav="capazos" class="nav-link">Bolsos</a>
+      <a href="#catalogo" data-nav="toallas" class="nav-link">Toallas</a>
+      <a href="#catalogo" data-nav="accesorios" class="nav-link">Accesorios</a>
+      <a href="#catalogo" data-nav="beauty" class="nav-link">Beauty</a>
+      <a href="#boutique" class="nav-link">Nuestra Tienda</a>
+    </nav>
+
+    <div class="flex items-center gap-5 justify-end">
+      <button id="searchBtn" aria-label="Buscar"><i data-lucide="search" class="w-[18px] h-[18px]"></i></button>
+      <button id="favBtn" class="relative" aria-label="Favoritos">
+        <i data-lucide="heart" class="w-[18px] h-[18px]"></i><span id="favCount" class="count-badge hidden">0</span>
+      </button>
+      <button id="cartBtn" class="relative" aria-label="Abrir cesta">
+        <i data-lucide="shopping-bag" class="w-[18px] h-[18px]"></i><span id="cartCount" class="count-badge hidden">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Buscador desplegable -->
+  <div id="searchPanel" class="hidden border-t border-ink/10 bg-white">
+    <div class="max-w-3xl mx-auto px-5 py-6">
+      <div class="flex items-center gap-3 border-b border-ink/30 pb-2">
+        <i data-lucide="search" class="w-4 h-4 text-inksoft"></i>
+        <input id="searchInput" type="text" placeholder="Buscar bikinis, toallas, capazos..." class="w-full bg-transparent outline-none text-sm tracking-wide placeholder:text-ink/50" autocomplete="off">
+        <button id="searchClose" aria-label="Cerrar buscador"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div id="searchResults" class="mt-4 grid gap-1"></div>
+    </div>
+  </div>
+
+  <!-- Menú móvil -->
+  <div id="mobileMenu" class="hidden lg:hidden border-t border-ink/10 bg-white">
+    <div class="px-5 py-5 grid gap-4">
+      <a href="#catalogo" data-nav="swim" class="nav-link w-fit">Swimwear</a>
+      <a href="#catalogo" data-nav="capazos" class="nav-link w-fit">Bolsos</a>
+      <a href="#catalogo" data-nav="toallas" class="nav-link w-fit">Toallas</a>
+      <a href="#catalogo" data-nav="accesorios" class="nav-link w-fit">Accesorios</a>
+      <a href="#catalogo" data-nav="beauty" class="nav-link w-fit">Beauty</a>
+      <a href="#boutique" class="nav-link w-fit">Nuestra Tienda</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO EDITORIAL ============ -->
+<section class="grid lg:grid-cols-2 min-h-[78vh]">
+  <div class="flex items-center order-2 lg:order-1 px-6 sm:px-12 lg:px-20 py-16 lg:py-0 bg-white">
+    <div class="max-w-md fade-in">
+      <p class="eyebrow text-brand mb-6">Colección Costa</p>
+      <h1 class="font-serif text-5xl sm:text-6xl xl:text-7xl leading-[1.02] text-ink">
+        Luz de mar,<br><em class="font-normal">piel de verano</em>
+      </h1>
+      <p class="mt-7 text-sm leading-7 text-inksoft">
+        Piezas pensadas para largos días frente al Mediterráneo. Diseñadas y confeccionadas en España con nylon reciclado, algodón orgánico y fibras naturales.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="#catalogo" class="btn btn-outline">Descubrir la colección</a>
+      </div>
+    </div>
+  </div>
+  <div class="order-1 lg:order-2 relative bg-sand min-h-[52vh] lg:min-h-0 overflow-hidden">
+    <img data-name="Campaña verano" data-src-key="hero" alt="Campaña de verano DIANA CORAL" class="absolute inset-0 w-full h-full object-cover" loading="eager">
+    <p class="absolute bottom-5 left-5 eyebrow text-white/90 hidden sm:block">Campaña Verano</p>
+  </div>
+</section>
+
+<!-- ============ CATÁLOGO ============ -->
+<section id="catalogo" class="bg-sand border-t border-ink/10">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-20">
+    <div class="text-center mb-14">
+      <p class="eyebrow text-brand mb-4">La colección</p>
+      <h2 class="font-serif text-4xl sm:text-5xl text-ink">Esenciales del verano</h2>
+      <div class="mt-6 flex items-center justify-center gap-4 text-brand">
+        <span class="h-px w-12 bg-brand/60"></span>
+        <svg width="12" height="12" viewBox="-7 -7 14 14" fill="currentColor"><path d="M0,-6 C.8,-2 2,-.8 6,0 C2,.8 .8,2 0,6 C-.8,2 -2,.8 -6,0 C-2,-.8 -.8,-2 0,-6Z"/></svg>
+        <span class="h-px w-12 bg-brand/60"></span>
+      </div>
+    </div>
+
+    <!-- Barra de filtros -->
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between border-y border-ink/10 py-6">
+      <div id="filters" class="flex flex-wrap gap-2"></div>
+      <div class="flex flex-col sm:flex-row gap-5 sm:items-center">
+        <div class="flex items-center gap-2 border-b border-ink/30 pb-1.5 sm:w-56">
+          <i data-lucide="search" class="w-4 h-4 text-inksoft"></i>
+          <input id="gridSearch" type="text" placeholder="Buscar producto" class="w-full bg-transparent outline-none text-xs tracking-wider placeholder:text-ink/50" autocomplete="off">
+        </div>
+        <label class="flex items-center gap-3 text-[.65rem] tracking-[.18em] uppercase">
+          Ordenar
+          <select id="sortSelect" class="bg-transparent border-b border-ink/30 py-1.5 text-xs tracking-wider outline-none cursor-pointer normal-case">
+            <option value="featured">Destacados</option>
+            <option value="asc">Precio: menor a mayor</option>
+            <option value="desc">Precio: mayor a menor</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <p id="resultInfo" class="mt-6 text-[.7rem] tracking-[.18em] uppercase text-inksoft"></p>
+    <div id="grid" class="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-12"></div>
+    <div id="emptyState" class="hidden text-center py-24">
+      <p class="font-serif text-3xl text-ink">No hemos encontrado resultados</p>
+      <p class="mt-3 text-sm text-inksoft">Prueba con otra búsqueda o cambia de categoría.</p>
+      <button id="resetFilters" class="btn btn-outline mt-8">Ver todo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LA BOUTIQUE ============ -->
+<section id="boutique" class="bg-white">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-24 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <div class="grid grid-cols-5 gap-4">
+      <div class="col-span-3 aspect-[3/4] bg-sand overflow-hidden rounded-sm">
+        <img data-name="La Boutique" data-src-key="boutique1" alt="Fachada de la boutique frente al mar" class="w-full h-full object-cover" loading="lazy">
+      </div>
+      <div class="col-span-2 aspect-[2/3] bg-sand overflow-hidden rounded-sm mt-16">
+        <img data-name="Interior" data-src-key="boutique2" alt="Interior de la boutique" class="w-full h-full object-cover" loading="lazy">
+      </div>
+    </div>
+    <div class="max-w-lg">
+      <p class="eyebrow text-brand mb-5">La Boutique</p>
+      <h2 class="font-serif text-4xl sm:text-5xl text-ink leading-tight">Una casa blanca<br>frente al mar</h2>
+      <p class="mt-7 text-sm leading-7 text-inksoft">
+        Nuestra tienda es una extensión de la costa: paredes encaladas, fibras naturales y la luz del Mediterráneo entrando por cada ventana. Un lugar para probarse el verano con calma, con el sonido del mar de fondo.
+      </p>
+      <p class="mt-4 text-sm leading-7 text-inksoft">
+        Cada pieza se cuida de principio a fin: del hilado reciclado al empaquetado sin plástico.
+      </p>
+      <a href="#sostenibilidad" class="btn btn-outline mt-9">Nuestro compromiso</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOSTENIBILIDAD ============ -->
+<section id="sostenibilidad" class="bg-sand border-y border-ink/10">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-20">
+    <div class="text-center max-w-2xl mx-auto">
+      <p class="eyebrow text-brand mb-4">Sostenibilidad</p>
+      <h2 class="font-serif text-4xl sm:text-5xl text-ink">Hecho para durar, pensado para el mar</h2>
+    </div>
+    <div class="mt-16 grid md:grid-cols-3 gap-12 md:gap-0 md:divide-x divide-ink/15">
+      <div class="px-8 text-center">
+        <i data-lucide="recycle" class="w-6 h-6 mx-auto text-brand" stroke-width="1.2"></i>
+        <h3 class="mt-5 eyebrow text-ink">Materiales reciclados</h3>
+        <p class="mt-4 text-sm leading-7 text-inksoft">Nuestro swimwear se confecciona con nylon reciclado procedente de redes de pesca y residuos textiles.</p>
+      </div>
+      <div class="px-8 text-center">
+        <i data-lucide="map-pin" class="w-6 h-6 mx-auto text-brand" stroke-width="1.2"></i>
+        <h3 class="mt-5 eyebrow text-ink">Hecho en España</h3>
+        <p class="mt-4 text-sm leading-7 text-inksoft">Producción cercana, talleres locales y trazabilidad en cada pieza para reducir distancias y cuidar el oficio.</p>
+      </div>
+      <div class="px-8 text-center">
+        <i data-lucide="leaf" class="w-6 h-6 mx-auto text-brand" stroke-width="1.2"></i>
+        <h3 class="mt-5 eyebrow text-ink">Algodón orgánico</h3>
+        <p class="mt-4 text-sm leading-7 text-inksoft">Toallas de algodón orgánico y packaging sin plástico: menos huella, más tacto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-white">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-20 pb-10">
+    <div class="grid lg:grid-cols-[1.2fr_2fr] gap-16">
+      <div>
+        <div id="footLogoSlot" class="mb-8"></div>
+        <p class="eyebrow text-ink mb-3">Newsletter</p>
+        <p class="text-sm text-inksoft leading-7 max-w-sm">Novedades, lanzamientos y un 10% en tu primer pedido.</p>
+        <form id="newsForm" class="mt-6 flex max-w-sm border-b border-ink/40" novalidate>
+          <input id="newsEmail" type="email" placeholder="Tu correo electrónico" class="flex-1 bg-transparent py-3 text-sm outline-none placeholder:text-ink/50" autocomplete="email">
+          <button class="eyebrow text-brand hover:text-ink transition-colors px-2" type="submit">Suscribirme</button>
+        </form>
+        <p id="newsMsg" class="mt-3 text-xs h-4"></p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-10">
+        <div>
+          <p class="eyebrow text-ink mb-5">Ayuda</p>
+          <ul class="space-y-3 text-sm text-inksoft">
+            <li><a href="#" class="hover:text-brand transition-colors">Envíos y entregas</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">Cambios y devoluciones</a></li>
+            <li><a href="#" data-open-sizeguide class="hover:text-brand transition-colors">Guía de tallas</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow text-ink mb-5">Legal</p>
+          <ul class="space-y-3 text-sm text-inksoft">
+            <li><a href="#" class="hover:text-brand transition-colors">Aviso legal</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">Privacidad</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">Cookies</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">Condiciones de compra</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow text-ink mb-5">Síguenos</p>
+          <ul class="space-y-3 text-sm text-inksoft">
+            <li><a href="#" class="hover:text-brand transition-colors">Instagram</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">Pinterest</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">TikTok</a></li>
+            <li><a href="#" class="hover:text-brand transition-colors">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-16 pt-8 border-t border-ink/10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
+      <p class="text-[.7rem] tracking-wider text-inksoft">© <span id="year"></span> DIANA CORAL. Todos los derechos reservados.</p>
+      <ul class="flex flex-wrap gap-2" aria-label="Métodos de pago">
+        <li class="border border-ink/20 rounded-sm px-3 py-1.5 text-[.62rem] tracking-[.18em] uppercase">Visa</li>
+        <li class="border border-ink/20 rounded-sm px-3 py-1.5 text-[.62rem] tracking-[.18em] uppercase">Mastercard</li>
+        <li class="border border-ink/20 rounded-sm px-3 py-1.5 text-[.62rem] tracking-[.18em] uppercase">PayPal</li>
+        <li class="border border-ink/20 rounded-sm px-3 py-1.5 text-[.62rem] tracking-[.18em] uppercase">Bizum</li>
+        <li class="border border-ink/20 rounded-sm px-3 py-1.5 text-[.62rem] tracking-[.18em] uppercase">Apple Pay</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODAL DE PRODUCTO ============ -->
+<div id="productOverlay" class="overlay z-[60] overflow-y-auto" aria-hidden="true">
+  <div class="min-h-full flex items-center justify-center p-3 sm:p-8">
+    <div id="productPanel" class="modal-panel relative bg-white w-full max-w-5xl rounded-sm" role="dialog" aria-modal="true" aria-label="Detalle de producto"></div>
+  </div>
+</div>
+
+<!-- ============ GUÍA DE TALLAS ============ -->
+<div id="sizeOverlay" class="overlay z-[65] flex items-center justify-center p-4" aria-hidden="true">
+  <div class="modal-panel bg-white w-full max-w-md p-8 rounded-sm relative" role="dialog" aria-modal="true" aria-label="Guía de tallas">
+    <button data-close="size" class="absolute top-4 right-4" aria-label="Cerrar"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <p class="eyebrow text-brand mb-3">Guía de tallas</p>
+    <h3 class="font-serif text-3xl text-ink">Encuentra tu talla</h3>
+    <table class="w-full mt-6 text-sm text-center">
+      <thead class="eyebrow text-inksoft">
+        <tr class="border-b border-ink/15"><th class="py-3 text-left font-medium">Talla</th><th class="font-medium">Pecho (cm)</th><th class="font-medium">Cintura (cm)</th><th class="font-medium">Cadera (cm)</th></tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-ink/10"><td class="py-3 text-left">XS</td><td>80-84</td><td>60-64</td><td>86-90</td></tr>
+        <tr class="border-b border-ink/10"><td class="py-3 text-left">S</td><td>85-89</td><td>65-69</td><td>91-95</td></tr>
+        <tr class="border-b border-ink/10"><td class="py-3 text-left">M</td><td>90-94</td><td>70-74</td><td>96-100</td></tr>
+        <tr><td class="py-3 text-left">L</td><td>95-99</td><td>75-79</td><td>101-105</td></tr>
+      </tbody>
+    </table>
+    <p class="mt-5 text-xs leading-6 text-inksoft">Medidas orientativas. Si estás entre dos tallas, te recomendamos la mayor para mayor comodidad.</p>
+  </div>
+</div>
+
+<!-- ============ CARRITO LATERAL ============ -->
+<div id="cartOverlay" class="overlay z-[70]" aria-hidden="true">
+  <aside id="cartDrawer" class="drawer" role="dialog" aria-modal="true" aria-label="Cesta de la compra" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 h-20 border-b border-ink/10 shrink-0">
+      <h2 class="font-serif text-3xl text-ink">Tu cesta</h2>
+      <button data-close="cart" aria-label="Cerrar cesta"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+    <div class="px-6 py-5 border-b border-ink/10 shrink-0 bg-sand">
+      <p id="shipMsg" class="text-xs tracking-wide"></p>
+      <div class="mt-3 h-[3px] w-full bg-ink/10"><div id="shipBar" class="h-full bg-brand transition-all duration-500" style="width:0%"></div></div>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto thin-scroll px-6"></div>
+    <div id="cartFooter" class="px-6 py-6 border-t border-ink/10 shrink-0 bg-white">
+      <div class="flex items-center justify-between text-sm">
+        <span class="eyebrow">Subtotal</span><span id="cartSubtotal" class="text-base font-medium">0,00 €</span>
+      </div>
+      <p class="mt-2 text-xs text-inksoft">Los gastos de envío se calculan en el siguiente paso.</p>
+      <button id="checkoutBtn" class="btn btn-brand w-full mt-5">Finalizar compra</button>
+    </div>
+  </aside>
+</div>
+
+<!-- ============ CHECKOUT SIMULADO ============ -->
+<div id="checkoutOverlay" class="overlay z-[80] overflow-y-auto" aria-hidden="true">
+  <div class="min-h-full flex items-center justify-center p-3 sm:p-8">
+    <div class="modal-panel relative bg-white w-full max-w-4xl rounded-sm" role="dialog" aria-modal="true" aria-label="Finalizar compra">
+      <button data-close="checkout" class="absolute top-4 right-4 z-10" aria-label="Cerrar"><i data-lucide="x" class="w-5 h-5"></i></button>
+
+      <!-- Paso 1: formulario -->
+      <div id="checkoutForm" class="grid md:grid-cols-[1.4fr_1fr]">
+        <form id="payForm" class="p-8 sm:p-10">
+          <p class="eyebrow text-brand mb-3">Finalizar compra</p>
+          <h2 class="font-serif text-4xl text-ink">Datos de envío y pago</h2>
+          <p class="mt-3 text-xs text-inksoft">Simulación de pedido: no introduzcas datos bancarios reales.</p>
+
+          <p class="eyebrow text-ink mt-9 mb-2">Contacto</p>
+          <div class="grid sm:grid-cols-2 gap-x-6 gap-y-5">
+            <div><label class="lbl" for="cName">Nombre y apellidos</label><input id="cName" class="field" required autocomplete="name"></div>
+            <div><label class="lbl" for="cEmail">Correo electrónico</label><input id="cEmail" type="email" class="field" required autocomplete="email"></div>
+          </div>
+
+          <p class="eyebrow text-ink mt-9 mb-2">Dirección de envío</p>
+          <div class="grid sm:grid-cols-2 gap-x-6 gap-y-5">
+            <div class="sm:col-span-2"><label class="lbl" for="cAddr">Dirección</label><input id="cAddr" class="field" required autocomplete="street-address"></div>
+            <div><label class="lbl" for="cCity">Ciudad</label><input id="cCity" class="field" required autocomplete="address-level2"></div>
+            <div><label class="lbl" for="cZip">Código postal</label><input id="cZip" class="field" required pattern="[0-9]{5}" inputmode="numeric" maxlength="5" autocomplete="postal-code"></div>
+            <div class="sm:col-span-2">
+              <label class="lbl" for="cCountry">País</label>
+              <select id="cCountry" class="field cursor-pointer"><option>España</option><option>Portugal</option><option>Francia</option><option>Italia</option><option>Alemania</option></select>
+            </div>
+          </div>
+
+          <p class="eyebrow text-ink mt-9 mb-2">Pago con tarjeta</p>
+          <div class="grid grid-cols-2 gap-x-6 gap-y-5">
+            <div class="col-span-2"><label class="lbl" for="cCard">Número de tarjeta</label><input id="cCard" class="field" required inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number"></div>
+            <div><label class="lbl" for="cExp">Caducidad</label><input id="cExp" class="field" required placeholder="MM/AA" maxlength="5" pattern="(0[1-9]|1[0-2])\/[0-9]{2}" autocomplete="cc-exp"></div>
+            <div><label class="lbl" for="cCvc">CVC</label><input id="cCvc" class="field" required inputmode="numeric" placeholder="123" maxlength="4" pattern="[0-9]{3,4}" autocomplete="cc-csc"></div>
+          </div>
+
+          <button id="payBtn" type="submit" class="btn btn-brand w-full mt-10">Pagar ahora</button>
+        </form>
+
+        <aside class="bg-sand p-8 sm:p-10 border-t md:border-t-0 md:border-l border-ink/10">
+          <p class="eyebrow text-ink mb-6">Resumen del pedido</p>
+          <div id="checkoutItems" class="grid gap-4 max-h-64 overflow-y-auto thin-scroll"></div>
+          <dl class="mt-7 pt-6 border-t border-ink/15 text-sm grid gap-3">
+            <div class="flex justify-between"><dt>Subtotal</dt><dd id="coSub"></dd></div>
+            <div class="flex justify-between"><dt>Envío</dt><dd id="coShip"></dd></div>
+            <div class="flex justify-between pt-4 border-t border-ink/15 text-base font-medium"><dt class="eyebrow">Total</dt><dd id="coTotal"></dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <!-- Paso 2: confirmación -->
+      <div id="checkoutDone" class="hidden px-8 py-16 sm:py-20 text-center max-w-xl mx-auto">
+        <div class="mx-auto w-14 h-14 rounded-full border border-brand flex items-center justify-center text-brand"><i data-lucide="check" class="w-6 h-6"></i></div>
+        <p class="eyebrow text-brand mt-8">Pedido confirmado</p>
+        <h2 class="font-serif text-4xl sm:text-5xl text-ink mt-3">Gracias por tu compra</h2>
+        <p class="mt-5 text-sm leading-7 text-inksoft">Hemos enviado un correo de confirmación a <span id="doneEmail" class="text-ink"></span>. Preparamos tu pedido con mucho cariño.</p>
+        <div class="mt-8 inline-block border border-ink/15 px-8 py-5">
+          <p class="text-[.62rem] tracking-[.22em] uppercase text-inksoft">Número de referencia</p>
+          <p id="doneRef" class="font-serif text-3xl text-ink mt-1 tracking-wider"></p>
+        </div>
+        <div class="mt-10"><button data-close="checkout" class="btn btn-outline">Seguir comprando</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Aviso breve -->
+<div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-[90] bg-ink text-white text-xs tracking-[.14em] uppercase px-6 py-3 rounded-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+<script>
+/* =====================================================================
+   1. CONFIGURACIÓN DE IMÁGENES
+   Las fotos están en la carpeta img/ junto a este archivo. Para cambiar una,
+   sustituye el archivo o edita su ruta aquí. Si una imagen no carga, se muestra un
+   marcador elegante con el nombre del producto (ver imgFallback).
+   ===================================================================== */
+const IMAGES = {
+  hero:        'img/hero.jpg',
+  boutique1:   'img/boutique-1.jpg',
+  boutique2:   'img/boutique-2.jpg',
+  bikini:      ['img/bikini-1.jpg', 'img/bikini-2.jpg', 'img/bikini-3.jpg'],
+  bañador:     ['img/banador-1.jpg', 'img/banador-2.jpg', 'img/banador-3.jpg'],
+  toallaRayas: ['img/toalla-rayas-1.jpg', 'img/toalla-rayas-2.jpg', 'img/toalla-rayas-3.jpg'],
+  capazo:      ['img/capazo-1.jpg', 'img/capazo-2.jpg', 'img/capazo-3.jpg'],
+  gorra:       ['img/gorra-1.jpg', 'img/gorra-2.jpg', 'img/gorra-3.jpg'],
+  sandalias:   ['img/sandalias-1.jpg', 'img/sandalias-2.jpg', 'img/sandalias-3.jpg'],
+  beauty:      ['img/beauty-1.jpg', 'img/beauty-2.jpg', 'img/beauty-3.jpg'],
+  toallaRosa:  ['img/toalla-rosa-1.jpg', 'img/toalla-rosa-2.jpg', 'img/toalla-rosa-3.jpg']
+};
+
+/* =====================================================================
+   2. CATÁLOGO (array de productos)
+   'options' son las variantes que elige el cliente: tallas, colores...
+   'look' son los IDs de productos sugeridos en "Completa el look".
+   ===================================================================== */
+const PRODUCTS = [
+  { id: 1, name: 'Sage & Periwinkle Ribbed Bikini Set', price: 185, cat: 'swim', badge: 'Novedad',
+    desc: 'Bikini de canalé con medallón central con el logo DC. Tejido elástico de tacto suave que se adapta al cuerpo y seca rápido.',
+    optionLabel: 'Talla', options: ['XS', 'S', 'M', 'L'], sizeGuide: true,
+    material: '90% Nylon Reciclado, 10% Elastano', origin: 'Hecho en España', rating: 4.8, reviews: 32,
+    imgs: IMAGES.bikini, look: [7, 8] },
+  { id: 2, name: 'Bañador Mediterráneo Diana', price: 160, cat: 'swim', badge: '',
+    desc: 'Bañador de corte clásico en tonos azul lavanda y blanco. Espalda cubierta, tirantes finos y forro interior.',
+    optionLabel: 'Talla', options: ['XS', 'S', 'M', 'L'], sizeGuide: true,
+    material: '90% Nylon Reciclado, 10% Elastano', origin: 'Hecho en España', rating: 4.9, reviews: 18,
+    imgs: IMAGES.bañador, look: [3, 7] },
+  { id: 3, name: 'Toalla de Playa Rayas DC', price: 65, cat: 'toallas', badge: '',
+    desc: 'Algodón orgánico a rayas azules y blancas con el sello DC en el centro. Gran formato, absorbente y de secado rápido.',
+    optionLabel: 'Formato', options: ['Única'], sizeGuide: false,
+    material: '100% Algodón Orgánico', origin: 'Hecho en España', rating: 4.7, reviews: 54,
+    imgs: IMAGES.toallaRayas, look: [7, 1] },
+  { id: 4, name: 'Capazo Artesanal Costa', price: 120, cat: 'capazos', badge: 'Artesanal',
+    desc: 'Bolso de palma trenzada a mano con asas de piel y parche de cuero grabado con el logo DC. Cada pieza es única.',
+    optionLabel: 'Formato', options: ['Única'], sizeGuide: false,
+    material: 'Palma trenzada a mano, asas de piel', origin: 'Hecho en España', rating: 4.6, reviews: 27,
+    imgs: IMAGES.capazo, look: [3, 7] },
+  { id: 5, name: 'Gorra Bordada Diana Coral', price: 45, cat: 'accesorios', badge: '',
+    desc: 'Gorra de algodón con monograma DC bordado en el frontal y cierre ajustable. Disponible en azul y blanco.',
+    optionLabel: 'Color', options: ['Azul', 'Blanco'], sizeGuide: false,
+    material: '100% Algodón, bordado en hilo', origin: 'Hecho en España', rating: 4.8, reviews: 41,
+    imgs: IMAGES.gorra, look: [7, 3] },
+  { id: 6, name: 'Sandalias Piel & Yute DC', price: 95, cat: 'accesorios', badge: '',
+    desc: 'Chanclas planas de piel color arena con el monograma grabado. Plantilla acolchada y suela de yute.',
+    optionLabel: 'Talla', options: ['36', '37', '38', '39', '40', '41'], sizeGuide: false,
+    material: 'Piel curtida, suela de yute', origin: 'Hecho en España', rating: 4.5, reviews: 22,
+    imgs: IMAGES.sandalias, look: [4, 8] },
+  { id: 7, name: 'Diana Coral Beauty Set Solar', price: 78, cat: 'beauty', badge: 'Esencial',
+    desc: 'Pack de Loción Solar SPF50, Aftersun hidratante y Bruma corporal. El ritual completo para cuidar la piel antes y después del sol.',
+    optionLabel: 'Formato', options: ['Único'], sizeGuide: false,
+    material: 'Loción solar SPF50, aftersun hidratante y bruma corporal', origin: 'Hecho en España', rating: 4.9, reviews: 63,
+    imgs: IMAGES.beauty, look: [8, 2] },
+  { id: 8, name: 'Toalla Resort Sunset', price: 65, cat: 'toallas', badge: 'Edición limitada',
+    desc: 'Edición a rayas rosa suave y blanco con logotipo central. Algodón orgánico de gramaje generoso.',
+    optionLabel: 'Formato', options: ['Única'], sizeGuide: false,
+    material: '100% Algodón Orgánico', origin: 'Hecho en España', rating: 4.7, reviews: 29,
+    imgs: IMAGES.toallaRosa, look: [7, 1] }
+];
+
+const FILTERS = [
+  { key: 'all', label: 'Todos' },
+  { key: 'swim', label: 'Bikinis y Bañadores' },
+  { key: 'capazos', label: 'Capazos' },
+  { key: 'toallas', label: 'Toallas' },
+  { key: 'accesorios', label: 'Gorras y Calzado' },
+  { key: 'beauty', label: 'Beauty' }
+];
+
+const FREE_SHIPPING = 150;   // umbral de envío gratis (€)
+const SHIPPING_COST = 4.95;  // coste de envío si no se alcanza
+
+/* =====================================================================
+   3. UTILIDADES
+   ===================================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const money = n => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n);
+const byId = id => PRODUCTS.find(p => p.id === Number(id));
+const refreshIcons = () => window.lucide && lucide.createIcons();
+
+// Persistencia ligera: si el navegador bloquea localStorage, la tienda sigue funcionando
+const store = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+// Marcador de imagen si la foto no carga (arena + nombre en serif)
+function placeholder(name) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200"><rect width="900" height="1200" fill="#F1EFEA"/><circle cx="450" cy="520" r="90" fill="none" stroke="#737AE6" stroke-width="1.5"/><circle cx="450" cy="520" r="78" fill="none" stroke="#737AE6" stroke-width="1"/><text x="450" y="540" text-anchor="middle" font-family="Georgia,serif" font-size="56" fill="#737AE6">DC</text><text x="450" y="700" text-anchor="middle" font-family="Georgia,serif" font-size="34" fill="#50535A">${name.replace(/&/g, '&amp;')}</text></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+function imgFallback(el) { el.onerror = null; el.src = placeholder(el.dataset.name || 'DIANA CORAL'); }
+window.imgFallback = imgFallback;
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.remove('opacity-0');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.add('opacity-0'), 2200);
+}
+
+/* =====================================================================
+   4. LOGOTIPO SVG
+   Doble círculo fino, monograma DC entrelazado (la C lleva una estrella
+   de 4 puntas dentro), nombre con espaciado amplio y separador ─── ✦ ───
+   ===================================================================== */
+function logoSVG(height = 64) {
+  const star = 'M0,-6 C.8,-2 2,-.8 6,0 C2,.8 .8,2 0,6 C-.8,2 -2,.8 -6,0 C-2,-.8 -.8,-2 0,-6Z';
+  return `
+  <svg height="${height}" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DIANA CORAL" style="color:#737AE6">
+    <circle cx="120" cy="62" r="50" fill="none" stroke="currentColor" stroke-width="1.2"/>
+    <circle cx="120" cy="62" r="44" fill="none" stroke="currentColor" stroke-width=".7"/>
+    <g font-family="'Cormorant Garamond', serif" font-weight="500" font-size="48" fill="currentColor">
+      <text x="106" y="79" text-anchor="middle">D</text>
+      <text x="132" y="79" text-anchor="middle" fill-opacity=".92">C</text>
+    </g>
+    <path d="${star}" transform="translate(135 63) scale(.78)" fill="currentColor"/>
+    <text x="120" y="142" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-weight="500" font-size="21" letter-spacing="7" fill="currentColor">DIANA CORAL</text>
+    <line x1="72" y1="164" x2="108" y2="164" stroke="currentColor" stroke-width=".9"/>
+    <path d="${star}" transform="translate(120 164) scale(.9)" fill="currentColor"/>
+    <line x1="132" y1="164" x2="168" y2="164" stroke="currentColor" stroke-width=".9"/>
+  </svg>`;
+}
+
+/* =====================================================================
+   5. ESTADO
+   ===================================================================== */
+const state = {
+  filter: 'all',
+  sort: 'featured',
+  query: '',
+  cart: store.get('dc_cart', []),     // [{ key, id, option, qty }]
+  favs: new Set(store.get('dc_favs', [])),
+  modal: { id: null, option: null, qty: 1, img: 0 }
+};
+const saveCart = () => store.set('dc_cart', state.cart);
+const saveFavs = () => store.set('dc_favs', [...state.favs]);
+
+/* =====================================================================
+   6. CATÁLOGO: filtros, orden y búsqueda en tiempo real
+   ===================================================================== */
+function visibleProducts() {
+  const q = state.query.trim().toLowerCase();
+  let list = PRODUCTS.filter(p =>
+    (state.filter === 'all' || p.cat === state.filter) &&
+    (!q || (p.name + ' ' + p.desc).toLowerCase().includes(q))
+  );
+  if (state.sort === 'asc') list = [...list].sort((a, b) => a.price - b.price);
+  if (state.sort === 'desc') list = [...list].sort((a, b) => b.price - a.price);
+  return list;
+}
+
+const heartSVG = on => `<svg viewBox="0 0 24 24" class="w-[18px] h-[18px]" fill="${on ? '#737AE6' : 'none'}" stroke="${on ? '#737AE6' : '#50535A'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`;
+
+function renderFilters() {
+  $('#filters').innerHTML = FILTERS.map(f =>
+    `<button class="chip ${state.filter === f.key ? 'active' : ''}" data-filter="${f.key}">${f.label}</button>`).join('');
+}
+
+function renderGrid() {
+  const list = visibleProducts();
+  $('#grid').innerHTML = list.map(p => `
+    <article class="group cursor-pointer fade-in" data-open="${p.id}">
+      <div class="relative aspect-[3/4] overflow-hidden bg-[#F1EFEA] rounded-sm">
+        <img src="${p.imgs[0]}" data-name="${p.name}" onerror="imgFallback(this)" alt="${p.name}" loading="lazy"
+             class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105">
+        ${p.badge ? `<span class="absolute top-3 left-3 bg-white/95 text-ink text-[.58rem] tracking-[.2em] uppercase px-2.5 py-1.5 rounded-sm">${p.badge}</span>` : ''}
+        <button data-fav="${p.id}" aria-label="Añadir a favoritos" aria-pressed="${state.favs.has(p.id)}"
+                class="absolute top-3 right-3 w-9 h-9 grid place-items-center bg-white/95 rounded-full transition-transform hover:scale-110">${heartSVG(state.favs.has(p.id))}</button>
+        <button data-quick="${p.id}"
+                class="absolute inset-x-3 bottom-3 bg-white/95 text-ink text-[.65rem] tracking-[.22em] uppercase py-3.5 rounded-sm translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-ink hover:text-white">Vista rápida</button>
+      </div>
+      <div class="pt-4">
+        <h3 class="font-serif text-xl leading-snug text-ink">${p.name}</h3>
+        <p class="mt-1.5 text-[.8rem] tracking-[.12em] text-inksoft">${money(p.price)}</p>
+      </div>
+    </article>`).join('');
+  $('#emptyState').classList.toggle('hidden', list.length > 0);
+  $('#resultInfo').textContent = `${list.length} ${list.length === 1 ? 'producto' : 'productos'}`;
+}
+
+function setFilter(key) { state.filter = key; renderFilters(); renderGrid(); }
+function setQuery(q, source) {
+  state.query = q;
+  if (source !== 'grid') $('#gridSearch').value = q;
+  if (source !== 'panel') $('#searchInput').value = q;
+  renderGrid(); renderSearchResults();
+}
+
+// Resultados rápidos dentro del buscador desplegable
+function renderSearchResults() {
+  const box = $('#searchResults');
+  const q = state.query.trim();
+  if (!q) { box.innerHTML = ''; return; }
+  const matches = PRODUCTS.filter(p => (p.name + ' ' + p.desc).toLowerCase().includes(q.toLowerCase())).slice(0, 5);
+  box.innerHTML = matches.length ? matches.map(p => `
+    <button data-open="${p.id}" class="flex items-center gap-4 text-left py-2 hover:bg-sand px-2 -mx-2 rounded-sm transition-colors">
+      <img src="${p.imgs[0]}" data-name="${p.name}" onerror="imgFallback(this)" alt="" class="w-12 h-14 object-cover bg-sand">
+      <span class="flex-1"><span class="block font-serif text-lg leading-tight text-ink">${p.name}</span><span class="text-xs text-inksoft tracking-wider">${money(p.price)}</span></span>
+    </button>`).join('') : `<p class="text-sm text-inksoft py-2">Sin resultados para “${q.replace(/</g, '&lt;')}”.</p>`;
+}
+
+/* =====================================================================
+   7. FAVORITOS
+   ===================================================================== */
+function toggleFav(id) {
+  id = Number(id);
+  state.favs.has(id) ? state.favs.delete(id) : state.favs.add(id);
+  saveFavs(); syncFavs();
+  toast(state.favs.has(id) ? 'Añadido a favoritos' : 'Eliminado de favoritos');
+}
+function syncFavs() {
+  $$('[data-fav]').forEach(b => {
+    const on = state.favs.has(Number(b.dataset.fav));
+    b.innerHTML = heartSVG(on); b.setAttribute('aria-pressed', on);
+  });
+  const c = $('#favCount'); c.textContent = state.favs.size; c.classList.toggle('hidden', !state.favs.size);
+}
+
+/* =====================================================================
+   8. MODAL DE PRODUCTO
+   ===================================================================== */
+const starSVG = on => `<svg viewBox="0 0 24 24" class="w-4 h-4" fill="${on ? '#737AE6' : 'none'}" stroke="#737AE6" stroke-width="1.5" stroke-linejoin="round"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>`;
+
+function openProduct(id) {
+  const p = byId(id); if (!p) return;
+  state.modal = { id: p.id, option: p.options[0] === 'Única' || p.options[0] === 'Único' ? p.options[0] : null, qty: 1, img: 0 };
+  closeSearch();
+  renderProductModal();
+  openLayer('product');
+}
+
+function renderProductModal() {
+  const p = byId(state.modal.id), m = state.modal;
+  const single = p.options.length === 1;
+  if (single) m.option = p.options[0];
+  const looks = p.look.map(byId);
+
+  $('#productPanel').innerHTML = `
+    <button data-close="product" class="absolute top-4 right-4 z-10 w-10 h-10 grid place-items-center bg-white/90 rounded-full" aria-label="Cerrar"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="grid md:grid-cols-2">
+      <div class="p-4 sm:p-6 md:p-8">
+        <div class="aspect-[4/5] bg-[#F1EFEA] overflow-hidden rounded-sm">
+          <img id="mainImg" src="${p.imgs[m.img]}" data-name="${p.name}" onerror="imgFallback(this)" alt="${p.name}" class="w-full h-full object-cover">
+        </div>
+        <div class="mt-3 grid grid-cols-3 gap-3">
+          ${p.imgs.map((src, i) => `
+            <button data-thumb="${i}" class="aspect-square overflow-hidden bg-[#F1EFEA] rounded-sm border ${i === m.img ? 'border-brand' : 'border-transparent'} transition-colors" aria-label="Ver imagen ${i + 1}">
+              <img src="${src}" data-name="${p.name}" onerror="imgFallback(this)" alt="" class="w-full h-full object-cover">
+            </button>`).join('')}
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 md:py-12 md:pr-12 md:pl-4 flex flex-col">
+        <p class="eyebrow text-brand">${FILTERS.find(f => f.key === p.cat)?.label || ''}</p>
+        <h2 class="font-serif text-4xl text-ink mt-3 leading-tight pr-8">${p.name}</h2>
+        <div class="mt-4 flex items-center gap-3">
+          <span class="flex gap-0.5">${[1, 2, 3, 4, 5].map(i => starSVG(i <= Math.round(p.rating))).join('')}</span>
+          <span class="text-xs tracking-wider text-inksoft">${p.rating.toFixed(1)} · ${p.reviews} reseñas</span>
+        </div>
+        <p class="mt-5 text-xl tracking-wide">${money(p.price)}</p>
+        <p class="mt-5 text-sm leading-7 text-inksoft">${p.desc}</p>
+
+        <div class="mt-8">
+          <div class="flex items-center justify-between mb-3">
+            <span class="eyebrow text-ink">${p.optionLabel}${single ? '' : ''}</span>
+            ${p.sizeGuide ? `<button data-open-sizeguide class="text-[.68rem] tracking-[.14em] uppercase underline underline-offset-4 hover:text-brand">Guía de tallas</button>` : ''}
+          </div>
+          <div class="flex flex-wrap gap-2" id="optionList">
+            ${p.options.map(o => `<button class="opt ${m.option === o ? 'active' : ''}" data-option="${o}">${o}</button>`).join('')}
+          </div>
+          <p id="optionError" class="hidden mt-3 text-xs text-brand">Selecciona ${p.optionLabel === 'Color' ? 'un color' : 'una talla'} para continuar.</p>
+        </div>
+
+        <div class="mt-8 flex items-stretch gap-3">
+          <div class="flex items-center border border-ink/25 rounded-sm">
+            <button data-qty="-1" class="w-11 h-full grid place-items-center hover:text-brand" aria-label="Disminuir cantidad"><i data-lucide="minus" class="w-4 h-4"></i></button>
+            <span id="modalQty" class="w-8 text-center text-sm">${m.qty}</span>
+            <button data-qty="1" class="w-11 h-full grid place-items-center hover:text-brand" aria-label="Aumentar cantidad"><i data-lucide="plus" class="w-4 h-4"></i></button>
+          </div>
+          <button id="modalAdd" class="btn btn-brand flex-1">Añadir a la cesta</button>
+          <button data-fav="${p.id}" aria-label="Añadir a favoritos" class="w-12 grid place-items-center border border-ink/25 rounded-sm hover:border-brand">${heartSVG(state.favs.has(p.id))}</button>
+        </div>
+
+        <dl class="mt-9 border-t border-ink/10 text-sm">
+          <div class="flex gap-4 py-4 border-b border-ink/10"><dt class="eyebrow w-24 shrink-0 pt-0.5">Materiales</dt><dd class="text-inksoft leading-6">${p.material}</dd></div>
+          <div class="flex gap-4 py-4 border-b border-ink/10"><dt class="eyebrow w-24 shrink-0 pt-0.5">Origen</dt><dd class="text-inksoft leading-6">${p.origin}</dd></div>
+          <div class="flex gap-4 py-4 border-b border-ink/10"><dt class="eyebrow w-24 shrink-0 pt-0.5">Envío</dt><dd class="text-inksoft leading-6">Gratuito en pedidos superiores a 150€. Cambios en 30 días.</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="border-t border-ink/10 bg-sand p-6 sm:p-8 md:px-12">
+      <p class="eyebrow text-brand">Completa el look</p>
+      <div class="mt-5 grid sm:grid-cols-2 gap-5">
+        ${looks.map(l => `
+          <div class="flex items-center gap-4 bg-white p-3 rounded-sm border border-ink/10">
+            <button data-open="${l.id}" class="w-20 h-24 shrink-0 overflow-hidden bg-[#F1EFEA] rounded-sm"><img src="${l.imgs[0]}" data-name="${l.name}" onerror="imgFallback(this)" alt="${l.name}" class="w-full h-full object-cover"></button>
+            <div class="flex-1 min-w-0">
+              <p class="font-serif text-lg leading-tight text-ink">${l.name}</p>
+              <p class="text-xs tracking-wider text-inksoft mt-1">${money(l.price)}</p>
+              <button data-look-add="${l.id}" class="mt-2 text-[.65rem] tracking-[.18em] uppercase text-brand underline underline-offset-4 hover:text-ink">Añadir a la cesta</button>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  refreshIcons();
+}
+
+function lookDefaultOption(p) { return p.options.length === 1 ? p.options[0] : p.options[0]; }
+
+/* =====================================================================
+   9. CARRITO
+   ===================================================================== */
+function addToCart(id, option, qty = 1, open = true) {
+  const p = byId(id);
+  const key = `${id}|${option}`;
+  const line = state.cart.find(l => l.key === key);
+  line ? line.qty += qty : state.cart.push({ key, id: p.id, option, qty });
+  saveCart(); renderCart();
+  if (open) openLayer('cart');
+}
+
+const cartSubtotal = () => state.cart.reduce((s, l) => s + byId(l.id).price * l.qty, 0);
+const cartUnits = () => state.cart.reduce((s, l) => s + l.qty, 0);
+
+function renderCart() {
+  const sub = cartSubtotal(), units = cartUnits();
+  const badge = $('#cartCount'); badge.textContent = units; badge.classList.toggle('hidden', !units);
+
+  // Barra de progreso de envío gratis
+  const pct = Math.min(100, (sub / FREE_SHIPPING) * 100);
+  $('#shipBar').style.width = pct + '%';
+  $('#shipMsg').innerHTML = sub >= FREE_SHIPPING
+    ? 'Tienes <strong class="font-medium text-brand">envío gratuito</strong> en este pedido.'
+    : `Te faltan <strong class="font-medium text-brand">${money(FREE_SHIPPING - sub)}</strong> para el envío gratuito.`;
+
+  $('#cartSubtotal').textContent = money(sub);
+  $('#cartFooter').classList.toggle('hidden', !units);
+
+  $('#cartItems').innerHTML = units ? state.cart.map(l => {
+    const p = byId(l.id);
+    const label = p.options.length > 1 ? `${p.optionLabel}: ${l.option}` : (p.options[0] === 'Única' || p.options[0] === 'Único' ? '' : l.option);
+    return `
+    <div class="flex gap-4 py-5 border-b border-ink/10">
+      <div class="w-20 h-24 shrink-0 bg-[#F1EFEA] overflow-hidden rounded-sm"><img src="${p.imgs[0]}" data-name="${p.name}" onerror="imgFallback(this)" alt="${p.name}" class="w-full h-full object-cover"></div>
+      <div class="flex-1 min-w-0 flex flex-col">
+        <div class="flex justify-between gap-3">
+          <p class="font-serif text-lg leading-tight text-ink">${p.name}</p>
+          <button data-remove="${l.key}" aria-label="Eliminar" class="text-inksoft hover:text-brand shrink-0"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        </div>
+        ${label ? `<p class="text-[.7rem] tracking-[.14em] uppercase text-inksoft mt-1">${label}</p>` : ''}
+        <div class="mt-auto flex items-center justify-between pt-3">
+          <div class="flex items-center border border-ink/25 rounded-sm">
+            <button data-cartqty="${l.key}" data-d="-1" class="w-8 h-8 grid place-items-center hover:text-brand" aria-label="Disminuir"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button>
+            <span class="w-7 text-center text-xs">${l.qty}</span>
+            <button data-cartqty="${l.key}" data-d="1" class="w-8 h-8 grid place-items-center hover:text-brand" aria-label="Aumentar"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button>
+          </div>
+          <p class="text-sm">${money(p.price * l.qty)}</p>
+        </div>
+      </div>
+    </div>`;
+  }).join('') : `
+    <div class="h-full flex flex-col items-center justify-center text-center py-20">
+      <i data-lucide="shopping-bag" class="w-8 h-8 text-brand" stroke-width="1.2"></i>
+      <p class="font-serif text-3xl text-ink mt-5">Tu cesta está vacía</p>
+      <p class="text-sm text-inksoft mt-2">Descubre las piezas de la nueva colección.</p>
+      <button data-close="cart" class="btn btn-outline mt-8">Seguir comprando</button>
+    </div>`;
+  refreshIcons();
+}
+
+function changeCartQty(key, d) {
+  const l = state.cart.find(x => x.key === key); if (!l) return;
+  l.qty += d;
+  if (l.qty <= 0) state.cart = state.cart.filter(x => x.key !== key);
+  saveCart(); renderCart();
+}
+
+/* =====================================================================
+   10. CHECKOUT SIMULADO
+   ===================================================================== */
+function openCheckout() {
+  if (!state.cart.length) return;
+  const sub = cartSubtotal();
+  const ship = sub >= FREE_SHIPPING ? 0 : SHIPPING_COST;
+  $('#checkoutItems').innerHTML = state.cart.map(l => {
+    const p = byId(l.id);
+    return `<div class="flex items-center gap-3">
+      <div class="w-14 h-16 bg-white overflow-hidden rounded-sm shrink-0"><img src="${p.imgs[0]}" data-name="${p.name}" onerror="imgFallback(this)" alt="" class="w-full h-full object-cover"></div>
+      <div class="flex-1 min-w-0"><p class="font-serif text-base leading-tight">${p.name}</p><p class="text-[.68rem] tracking-wider text-inksoft mt-0.5">${l.option !== 'Única' && l.option !== 'Único' ? l.option + ' · ' : ''}x${l.qty}</p></div>
+      <p class="text-sm">${money(p.price * l.qty)}</p></div>`;
+  }).join('');
+  $('#coSub').textContent = money(sub);
+  $('#coShip').textContent = ship ? money(ship) : 'Gratuito';
+  $('#coTotal').textContent = money(sub + ship);
+  $('#checkoutForm').classList.remove('hidden');
+  $('#checkoutDone').classList.add('hidden');
+  $('#payBtn').disabled = false; $('#payBtn').textContent = 'Pagar ahora';
+  closeLayer('cart');
+  openLayer('checkout');
+}
+
+function completeOrder(e) {
+  e.preventDefault();
+  const btn = $('#payBtn');
+  btn.disabled = true; btn.textContent = 'Procesando...';
+  setTimeout(() => {
+    const ref = 'DC-' + new Date().getFullYear() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+    $('#doneRef').textContent = ref;
+    $('#doneEmail').textContent = $('#cEmail').value;
+    $('#checkoutForm').classList.add('hidden');
+    $('#checkoutDone').classList.remove('hidden');
+    state.cart = []; saveCart(); renderCart();
+    $('#payForm').reset();
+    refreshIcons();
+    $('#checkoutOverlay').scrollTo({ top: 0 });
+  }, 1200);
+}
+
+/* =====================================================================
+   11. CAPAS (modal, carrito, checkout): abrir/cerrar con control de scroll
+   ===================================================================== */
+const layers = { product: '#productOverlay', cart: '#cartOverlay', checkout: '#checkoutOverlay', size: '#sizeOverlay' };
+const openOrder = [];
+
+function openLayer(name) {
+  const el = $(layers[name]);
+  el.classList.add('open'); el.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('locked');
+  if (!openOrder.includes(name)) openOrder.push(name);
+}
+function closeLayer(name) {
+  const el = $(layers[name]);
+  el.classList.remove('open'); el.setAttribute('aria-hidden', 'true');
+  const i = openOrder.indexOf(name); if (i > -1) openOrder.splice(i, 1);
+  if (!openOrder.length) document.body.classList.remove('locked');
+}
+
+/* =====================================================================
+   12. BUSCADOR DESPLEGABLE Y MENÚ MÓVIL
+   ===================================================================== */
+function openSearch() { $('#searchPanel').classList.remove('hidden'); $('#searchInput').focus(); }
+function closeSearch() { $('#searchPanel').classList.add('hidden'); }
+
+/* =====================================================================
+   13. EVENTOS (delegación: un solo listener para todo el documento)
+   ===================================================================== */
+document.addEventListener('click', e => {
+  const t = e.target;
+  const el = sel => t.closest(sel);
+
+  let n;
+  if ((n = el('[data-fav]'))) { e.stopPropagation(); toggleFav(n.dataset.fav); return; }
+  if ((n = el('[data-quick]'))) { e.stopPropagation(); openProduct(n.dataset.quick); return; }
+  if ((n = el('[data-look-add]'))) {
+    const p = byId(n.dataset.lookAdd);
+    addToCart(p.id, lookDefaultOption(p), 1, true);
+    return;
+  }
+  if ((n = el('[data-open]'))) { openProduct(n.dataset.open); return; }
+  if ((n = el('[data-filter]'))) { setFilter(n.dataset.filter); return; }
+  if ((n = el('[data-nav]'))) {
+    setFilter(n.dataset.nav); $('#mobileMenu').classList.add('hidden'); return; // el href lleva al catálogo
+  }
+  if ((n = el('[data-thumb]'))) { state.modal.img = Number(n.dataset.thumb); renderProductModal(); return; }
+  if ((n = el('[data-option]'))) {
+    state.modal.option = n.dataset.option;
+    $$('#optionList .opt').forEach(b => b.classList.toggle('active', b.dataset.option === state.modal.option));
+    $('#optionError').classList.add('hidden'); return;
+  }
+  if ((n = el('[data-qty]'))) {
+    state.modal.qty = Math.max(1, Math.min(9, state.modal.qty + Number(n.dataset.qty)));
+    $('#modalQty').textContent = state.modal.qty; return;
+  }
+  if (el('#modalAdd')) {
+    const m = state.modal;
+    if (!m.option) { $('#optionError').classList.remove('hidden'); return; }
+    addToCart(m.id, m.option, m.qty, true);
+    closeLayer('product'); return;
+  }
+  if ((n = el('[data-remove]'))) { changeCartQty(n.dataset.remove, -999); return; }
+  if ((n = el('[data-cartqty]'))) { changeCartQty(n.dataset.cartqty, Number(n.dataset.d)); return; }
+  if (el('[data-open-sizeguide]')) { e.preventDefault(); openLayer('size'); return; }
+  if ((n = el('[data-close]'))) { closeLayer(n.dataset.close); return; }
+
+  // Clic sobre el fondo oscuro cierra la capa
+  if (t.classList.contains('overlay') || (t.parentElement && t.parentElement.classList.contains('min-h-full') && t === t.parentElement)) {
+    const ov = t.closest('.overlay');
+    const name = Object.keys(layers).find(k => $(layers[k]) === ov);
+    if (name) closeLayer(name); return;
+  }
+  if (t === $('#productOverlay').firstElementChild) closeLayer('product');
+  if (t === $('#checkoutOverlay').firstElementChild) closeLayer('checkout');
+});
+
+// Cerrar con Escape la capa superior
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const top = openOrder[openOrder.length - 1];
+  if (top) closeLayer(top); else closeSearch();
+});
+
+$('#searchBtn').addEventListener('click', () => $('#searchPanel').classList.contains('hidden') ? openSearch() : closeSearch());
+$('#searchClose').addEventListener('click', closeSearch);
+$('#searchInput').addEventListener('input', e => setQuery(e.target.value, 'panel'));
+$('#searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { closeSearch(); $('#catalogo').scrollIntoView({ behavior: 'smooth' }); }
+});
+$('#gridSearch').addEventListener('input', e => setQuery(e.target.value, 'grid'));
+$('#sortSelect').addEventListener('change', e => { state.sort = e.target.value; renderGrid(); syncFavs(); refreshIcons(); });
+$('#resetFilters').addEventListener('click', () => { state.filter = 'all'; setQuery('', null); renderFilters(); });
+$('#menuBtn').addEventListener('click', () => $('#mobileMenu').classList.toggle('hidden'));
+$('#cartBtn').addEventListener('click', () => openLayer('cart'));
+$('#favBtn').addEventListener('click', () => {
+  // Atajo útil: muestra solo favoritos en el catálogo
+  if (!state.favs.size) { toast('Aún no tienes favoritos'); return; }
+  state.filter = 'all'; state.query = ''; $('#gridSearch').value = ''; $('#searchInput').value = '';
+  renderFilters();
+  $('#grid').innerHTML = '';
+  const favList = PRODUCTS.filter(p => state.favs.has(p.id));
+  state.query = ''; renderGridWith(favList);
+  $('#catalogo').scrollIntoView({ behavior: 'smooth' });
+  toast('Mostrando tus favoritos');
+});
+$('#checkoutBtn').addEventListener('click', openCheckout);
+$('#payForm').addEventListener('submit', completeOrder);
+
+// Formato automático de tarjeta y caducidad (solo comodidad visual)
+$('#cCard').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+});
+$('#cExp').addEventListener('input', e => {
+  let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+  e.target.value = v;
+});
+
+// Newsletter con validación básica
+$('#newsForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#newsEmail').value.trim(), msg = $('#newsMsg');
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  msg.textContent = ok ? 'Gracias por suscribirte. Revisa tu correo.' : 'Introduce un correo electrónico válido.';
+  msg.style.color = ok ? '#737AE6' : '#50535A';
+  if (ok) $('#newsEmail').value = '';
+});
+
+// Variante de renderGrid para una lista concreta (favoritos)
+function renderGridWith(list) {
+  const html = list.map(p => `
+    <article class="group cursor-pointer fade-in" data-open="${p.id}">
+      <div class="relative aspect-[3/4] overflow-hidden bg-[#F1EFEA] rounded-sm">
+        <img src="${p.imgs[0]}" data-name="${p.name}" onerror="imgFallback(this)" alt="${p.name}" class="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105">
+        <button data-fav="${p.id}" aria-label="Quitar de favoritos" class="absolute top-3 right-3 w-9 h-9 grid place-items-center bg-white/95 rounded-full">${heartSVG(true)}</button>
+        <button data-quick="${p.id}" class="absolute inset-x-3 bottom-3 bg-white/95 text-ink text-[.65rem] tracking-[.22em] uppercase py-3.5 rounded-sm translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-ink hover:text-white">Vista rápida</button>
+      </div>
+      <div class="pt-4"><h3 class="font-serif text-xl leading-snug text-ink">${p.name}</h3><p class="mt-1.5 text-[.8rem] tracking-[.12em] text-inksoft">${money(p.price)}</p></div>
+    </article>`).join('');
+  $('#grid').innerHTML = html;
+  $('#resultInfo').textContent = `Tus favoritos · ${list.length}`;
+  $('#emptyState').classList.add('hidden');
+}
+
+/* =====================================================================
+   14. ARRANQUE
+   ===================================================================== */
+function init() {
+  $('#logoSlot').innerHTML = logoSVG(72);
+  $('#footLogoSlot').innerHTML = logoSVG(96);
+  $('#year').textContent = new Date().getFullYear();
+
+  // Imágenes con data-src-key (hero y boutique) leen su URL de IMAGES
+  $$('img[data-src-key]').forEach(img => {
+    img.src = IMAGES[img.dataset.srcKey];
+    img.onerror = () => imgFallback(img);
+  });
+
+  renderFilters(); renderGrid(); renderCart(); syncFavs(); refreshIcons();
+}
+init();
+</script>
+</body>
+</html>
